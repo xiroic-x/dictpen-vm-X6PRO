@@ -6,27 +6,34 @@
 
 ## 1. 固件镜像 `boot_a.img` / `system_a.img`
 
-两个来源，任选其一：
+来源：上游 release **[X6pro](https://github.com/lbdl0030/dictpen-rootfs/releases/tag/X6pro)**（`X6pro-firmware-OS4.3.5`，词典笔 os4.3.5，ext4 版本）。该 release 说明原文：
 
-**A. 官方 OTA 包（公开下载，注意仍是厂商版权）**
+> ### 文件说明
+> - 根文件系统镜像
+> - 词典笔os4.3.5
+>
+> ### 使用前注意
+> 1. 确认设备型号为 X6pro
+> 2. 本镜像为ext4版本
+> 3. 因镜像文件过大，请使用网盘下载 https://1858587115.share.123pan.cn/123pan/WFGbvd-Z6FLv
+>
+> 这是由 @xiroic-x 提供的镜像包，感谢分享
+
+对应到本包：
+
+| 分区 | 来源 | MD5（本包 `[checks]`） |
+|------|------|------------------------|
+| boot | release 资产 `X6pro_boot_ext4.img`（16 MB） | `5a1129a5bd70cf3099b793e512aabb57`（已核对与 release 资产一致） |
+| rootfs | 上面网盘镜像包里的根文件系统镜像，重命名为 `system_a.img` | `db313878a4a151e140d9be7cca287e5d` |
 
 ```bash
-# 上游仓库 lbdl0030/dictpen-rootfs 的 releases 里有本机型的 OTA 包：
-#   RK3562_Melon-OTA-OS99.99.91  ->  RK3562_Melon-OTA-OS99.99.91.img (≈2027 MB)
-gh release download RK3562_Melon-OTA-OS99.99.91 --repo lbdl0030/dictpen-rootfs --dir ./ota
-# 解包得到分区镜像（OTA 包内一般含 boot/system 分区镜像或压缩包，按实际结构展开）
+gh release download X6pro --repo lbdl0030/dictpen-rootfs --dir ./fw    # 取 boot 镜像
+# 网盘取回 rootfs 镜像后：
+file ./fw/X6pro_boot_ext4.img system_a.img    # boot 应为 U-Boot FIT；system 应为原始 ext4（magic 0x53ef）
+md5sum ./fw/X6pro_boot_ext4.img system_a.img  # 与 packs/melon-pro/pack.toml 的 [checks] 对齐
 ```
 
-**B. 自己的设备**
-
-```bash
-# 通过设备自带的升级包或调试通道导出 boot/system 分区镜像；
-# 导出后用 file/xxd 自检：boot 应为 U-Boot FIT（含 DTB），system 应为原始 ext4（superblock magic 0x53ef）
-file boot_a.img system_a.img
-md5sum boot_a.img system_a.img   # 与 packs/melon-pro/pack.toml 的 [checks] 对齐（不一致就改 checks 或换镜像）
-```
-
-放到位：`packs/melon-pro/images/boot_a.img`、`packs/melon-pro/images/system_a.img`。
+放到位：`packs/melon-pro/images/boot_a.img`（= `X6pro_boot_ext4.img`）、`packs/melon-pro/images/system_a.img`。
 
 ## 2. 软件合成器载荷 `weston.tar`
 

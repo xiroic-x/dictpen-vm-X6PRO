@@ -1,13 +1,13 @@
-# dictpen-vm-packs · 有道词典笔虚拟机固件包
+# dictpen-vm-X6PRO · 有道词典笔 X6pro 虚拟机适配
 
-> 给 [lbdl0030/dictpen-vm](https://github.com/lbdl0030) 框架用的固件包集合。当前包含 **melon-pro**（RK3562 Melon / Linux ext4 / 固件 4.3.5）。
+> 有道词典笔 **X6pro**（平台标识 RK3562 Melon / Linux ext4 / 固件 4.3.5）在 [lbdl0030/dictpen-rootfs](https://github.com/lbdl0030/dictpen-rootfs) 的 dictpen-vm 框架上的适配。固件包目录沿用框架内标识 `melon-pro`，对应设备即 **X6pro**。
 > 许可：本项目采用 PolyForm Noncommercial License 1.0.0（非商业许可），条款见 [LICENSE](LICENSE)。
 
 ## 包含什么
 
 | 内容 | 说明 |
 |------|------|
-| `packs/melon-pro/` | 固件包本体：`pack.toml` + `patches/`（initramfs 钩子、UI 启动脚本、触摸桥、配置覆盖） |
+| `packs/melon-pro/` | **设备 X6pro** 的固件包本体：`pack.toml` + `patches/`（initramfs 钩子、UI 启动脚本、触摸桥、配置覆盖） |
 | `runtime/rockchip_ext4.py` | 框架 runtime 插件，让「原始 ext4 根 + U-Boot FIT boot」这类固件能挂起来 |
 | `tools/` | 本轮用到的可复现工具：依赖闭包计算、Debian 取包、aarch64 导出函数桩化、桌面资源匹配、串口解卡 |
 | `DEVLOG.md` | 开发日志：平台取证、黑屏根因、桩化约束、渲染实测、踩坑清单 |
@@ -15,7 +15,7 @@
 
 ## 为什么仓库里没有镜像和大文件
 
-固件镜像、桌面资源、OCR 桩库的版权属于**网易有道**，本仓库不转载。它们全部可以从**你自己的设备或官方 OTA 包**在本地生成，步骤见 [ASSETS.md](ASSETS.md)。
+固件镜像、桌面资源、OCR 桩库的版权属于**网易有道**，本仓库不转载。固件镜像来自上游 release [X6pro](https://github.com/lbdl0030/dictpen-rootfs/releases/tag/X6pro)（镜像包由 @xiroic-x 提供），其余按需在本地生成，步骤见 [ASSETS.md](ASSETS.md)。
 
 ## 快速开始
 
