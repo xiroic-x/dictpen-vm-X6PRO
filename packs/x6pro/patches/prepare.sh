@@ -11,16 +11,16 @@ chmod 755 "$TARGET/etc/init.d/S50vm-ui"
 # Compositor payload for the guest side to unpack (busybox tar, uncompressed).
 if [ -f /patches/weston.tar ]; then
     cp -f /patches/weston.tar "$TARGET/userdata/weston.tar"
-    echo "melon-pro: weston payload staged"
+    echo "x6pro: weston payload staged"
 fi
 # Optional pre-initialised guest state (from a device/VM where the app finished its
 # first-run initialisation). Drop userdata-seed.tar into the pack to use it.
 if [ -f /patches/userdata-seed.tar ]; then
-    tar xf /patches/userdata-seed.tar -C "$TARGET" 2>/dev/null && echo "melon-pro: userdata seed applied"
+    tar xf /patches/userdata-seed.tar -C "$TARGET" 2>/dev/null && echo "x6pro: userdata seed applied"
 fi
 if [ -f /patches/desktop.tar ]; then
     cp -f /patches/desktop.tar "$TARGET/userdata/desktop.tar"
-    echo "melon-pro: desktop resources staged"
+    echo "x6pro: desktop resources staged"
 fi
 # Keep the generic virtual network path; remove only the unavailable dropbear entry.
 if [ ! -x "$TARGET/usr/sbin/dropbear" ]; then
@@ -34,4 +34,4 @@ if [ ! -e "$TARGET/userdata/.vm-seeded" ]; then
     cp -a /ro/userdata/. "$TARGET/userdata/" 2>/dev/null || true
     touch "$TARGET/userdata/.vm-seeded"
 fi
-printf 'melon-pro: overlay prepared; source image remains read-only\n'
+printf 'x6pro: overlay prepared; source image remains read-only\n'

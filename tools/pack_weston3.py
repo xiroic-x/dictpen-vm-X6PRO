@@ -1,6 +1,6 @@
 import os, shutil
 SRC = 'vm/work/weston-root'
-DST = 'vm/packs/melon-pro/weston'
+DST = 'vm/packs/x6pro/weston'
 def put(src, dst):
     os.makedirs(os.path.dirname(dst), exist_ok=True)
     real = os.path.realpath(src) if os.path.islink(src) else src

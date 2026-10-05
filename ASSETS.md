@@ -18,10 +18,10 @@
 ```bash
 gh release download X6pro --repo lbdl0030/dictpen-rootfs --dir ./fw   # 取 boot 镜像
 # 根文件系统镜像按 release 页面说明取回后：
-cp ./fw/X6pro_boot_ext4.img   packs/melon-pro/images/boot_a.img
-cp ./fw/X6pro_rootfs_ext4.img packs/melon-pro/images/system_a.img
+cp ./fw/X6pro_boot_ext4.img   packs/x6pro/images/boot_a.img
+cp ./fw/X6pro_rootfs_ext4.img packs/x6pro/images/system_a.img
 file ./fw/X6pro_boot_ext4.img ./fw/X6pro_rootfs_ext4.img   # boot 应为 U-Boot FIT；rootfs 应为原始 ext4（magic 0x53ef）
-md5sum packs/melon-pro/images/boot_a.img packs/melon-pro/images/system_a.img
+md5sum packs/x6pro/images/boot_a.img packs/x6pro/images/system_a.img
 ```
 
 校验值对不上就说明拿到的是别的版本：换镜像，或同步修改 `pack.toml` 里的 `[checks]`。
@@ -34,12 +34,12 @@ md5sum packs/melon-pro/images/boot_a.img packs/melon-pro/images/system_a.img
 # 需要网络（能访问 deb.debian.org）与 host 上的 python
 python tools/debfetch.py            # 下载并解出 Debian arm64 包到 work/weston-root
 python tools/depclosure.py          # 计算依赖闭包（跳过 lib32/armhf），缺啥补啥
-python tools/pack_weston2.py        # 组装最小集到 packs/melon-pro/weston/
+python tools/pack_weston2.py        # 组装最小集到 packs/x6pro/weston/
 python tools/pack_weston3.py        # 补 weston/libexec_weston.so（漏了合成器会静默不启动）
-tar -cf packs/melon-pro/weston.tar -C packs/melon-pro/weston .
+tar -cf packs/x6pro/weston.tar -C packs/x6pro/weston .
 ```
 
-把结果放成 `packs/melon-pro/weston.tar`（包钩子会投送到 guest，`S50vm-ui` 负责解包启动）。
+把结果放成 `packs/x6pro/weston.tar`（包钩子会投送到 guest，`S50vm-ui` 负责解包启动）。
 许可：**Weston 本体（含 10 及所有版本）为 MIT 许可证**；随包依赖库按各自许可证（多为 MIT/BSD/LGPL）分发，随包保留各自的许可证文本。
 
 ## 3. 桌面资源 `desktop.tar`
@@ -53,7 +53,7 @@ tar -cf packs/melon-pro/weston.tar -C packs/melon-pro/weston .
 tar -cf desktop.tar -C <导出的目录> .
 ```
 
-放成 `packs/melon-pro/desktop.tar`；`S50vm-ui` 会把它解到 `pkg/<id>/a/`（当前脚本覆盖 3 个已知 id）。
+放成 `packs/x6pro/desktop.tar`；`S50vm-ui` 会把它解到 `pkg/<id>/a/`（当前脚本覆盖 3 个已知 id）。
 
 ## 4. OCR/NPU 桩库 `libyocr.so` / `libYoudaoStitch.so`（本地生成，勿分发）
 
@@ -64,9 +64,9 @@ tar -cf desktop.tar -C <导出的目录> .
 #   oem/YoudaoDictPen/output/libs/libyocr.so
 #   oem/YoudaoDictPen/output/libs/libYoudaoStitch.so
 KEEP_CTORS=1 python tools/a64stub.py \
-    libyocr.so  packs/melon-pro/patches/libyocr.so \
-    libYoudaoStitch.so  packs/melon-pro/patches/libYoudaoStitch.so
-python tools/check_ctor.py packs/melon-pro/patches/libyocr.so   # 确认 DT_INIT 非 0
+    libyocr.so  packs/x6pro/patches/libyocr.so \
+    libYoudaoStitch.so  packs/x6pro/patches/libYoudaoStitch.so
+python tools/check_ctor.py packs/x6pro/patches/libyocr.so   # 确认 DT_INIT 非 0
 ```
 
 ⚠️ **必须保留构造器**（`KEEP_CTORS=1`）：中和 `DT_INIT`/`DT_INIT_ARRAY` 会让应用启动即 SIGILL（该固件其它库依赖 `libyocr` 构造器）。
@@ -79,7 +79,7 @@ python tools/check_ctor.py packs/melon-pro/patches/libyocr.so   # 确认 DT_INIT
 ```bash
 # 在已初始化好的 guest 里：
 tar -cf /userdata/userdata-seed.tar -C / userdata userdisk/miniapp
-# 取出后放到 packs/melon-pro/userdata-seed.tar，并在 pack.toml 的 [adapt.replace] 里声明：
+# 取出后放到 packs/x6pro/userdata-seed.tar，并在 pack.toml 的 [adapt.replace] 里声明：
 #   "userdata-seed.tar" = "/tmp/userdata-seed.tar"
 ```
 

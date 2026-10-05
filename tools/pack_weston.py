@@ -1,6 +1,6 @@
 import os, shutil
 SRC = 'vm/work/weston-root'
-DST = 'vm/packs/melon-pro/weston'
+DST = 'vm/packs/x6pro/weston'
 FILES = [
  'usr/bin/weston',
  'usr/lib/aarch64-linux-gnu/libweston-10.so.0.0.1',

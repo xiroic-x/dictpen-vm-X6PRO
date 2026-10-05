@@ -1,5 +1,5 @@
-name = "melon-pro"
-note = "RK3562 Melon / Linux ext4 / source Version 4.3.5 / Debian-Weston compositor"
+name = "x6pro"
+note = "X6pro (RK3562 Melon) / Linux ext4 / OS 4.3.5 / software compositor"
 version = "4.3.5"
 
 [platform]

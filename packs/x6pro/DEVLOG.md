@@ -1,4 +1,4 @@
-# 固件包：melon-pro（RK3562 Melon / Linux ext4）
+# 开发日志：x6pro（设备 X6pro / RK3562 Melon / Linux ext4 / OS 4.3.5）
 
 `boot_a.img` + `system_a.img` 在本框架里运行的**全部**适配内容。框架只增加了一个 runtime
 （`scripts/runtimes/rockchip_ext4.py`）与一条 runtime 注册；`dpctl.py` / `initramfs-init.sh` / `vmgui` 的核心逻辑未改。
@@ -13,8 +13,6 @@
 | 面板 | DSI `panel@0/1` 时序 `hactive=480 vactive=960`；`etc/xdg/weston/weston.ini` 对 DSI-1 做 rotate-90；`cfg.json` 逻辑屏 `width=960 height=266 direction=270 yoffset=107`（= (480-266)/2） |
 | 用户态 | aarch64 + glibc 2.36（`libc.so.6` 导出到 GLIBC_2.36），因此可直接使用 Debian bookworm arm64 二进制 |
 | 图形栈 | **ARM Mali（libmali）+ Rockchip RGA**：`libmali-bifrost-g52-g13p0-wayland-gbm.so`、`librga.so.2`；无 Mesa、无 `/usr/lib/dri` |
-
-镜像来源：上游 release [X6pro](https://github.com/lbdl0030/dictpen-rootfs/releases/tag/X6pro)（词典笔 OS 4.3.5，ext4 版本）。其公布的 MD5 表（`X6pro_boot_ext4.img` = `5a1129a5bd70cf3099b793e512aabb57`、`X6pro_rootfs_ext4.img` = `db313878a4a151e140d9be7cca287e5d`）与本包 `[checks]` 一致，即包内两个镜像就是上游同版本镜像。
 
 镜像校验（`[checks]`，本地计算）：
 
@@ -54,7 +52,7 @@
 
 | 项 | 证据 |
 |----|------|
-| 包校验 / runtime / MD5 | `dpctl packs melon-pro` 全部就位 |
+| 包校验 / runtime / MD5 | `dpctl packs x6pro` 全部就位 |
 | ext4 根 + 持久化 overlay + switch_root | 串口 `### ext4 root mounted ###`、`### state: ext4 created and mounted ###`、`### overlay: persistent upper ###`、`### switch_root -> /mnt, init /sbin/init ###` |
 | 开发凭证 | `S00license: dev license written (174 bytes)`；`/userdata/cfg/license` 174 字节 |
 | 合成器 | `S50vm-ui` 后 socket `/run/debweston/wayland-0` 就绪；`vm-weston.log`：`DRM: output Virtual-1 uses shadow framebuffer`、`Output 'Virtual-1' enabled with head(s) Virtual-1` |
@@ -73,7 +71,7 @@
 
 ### 5.1 增量（同日深夜）
 
-1. **全新状态盘的首启初始化不完成**：新盘第一次开机时固件停在自带 splash「正在初始化配置，请等待…」（>3 分钟不推进，补起 ResourceManager / SoundPlayer 也一样）。崩点前日志停在 `yocr_ncnn` 加载 `/oem/.../melon-pro-rec-32x1280-v9.0.1.2.rknn.encrypt` 并落 `YBreakpad` dump → OCR/NPU 初始化链在 QEMU 上不可用，与 s7pro README 同类（s7pro 的解法是把 `libyocr.so` 全导出桩化 + 中和构造器，让应用走 OCR 不可用容忍路径）。
+1. **全新状态盘的首启初始化不完成**：新盘第一次开机时固件停在自带 splash「正在初始化配置，请等待…」（>3 分钟不推进，补起 ResourceManager / SoundPlayer 也一样）。崩点前日志停在 `yocr_ncnn` 加载 `/oem/.../x6pro-rec-32x1280-v9.0.1.2.rknn.encrypt` 并落 `YBreakpad` dump → OCR/NPU 初始化链在 QEMU 上不可用，与 s7pro README 同类（s7pro 的解法是把 `libyocr.so` 全导出桩化 + 中和构造器，让应用走 OCR 不可用容忍路径）。
 2. 已初始化的状态盘上，应用能正常进桌面并按上表渲染；当前可复现路径是：用已初始化的状态盘（勿加 `--fresh`）启动并拉起应用。
 3. 触控已完成（见上表）：桥脚本随包分发，`[adapt].touchbridge` + `cfg_overlay` 把 `tp` 指到 `/dev/input/by-path/axs_ts` 且 `tp_direction/tp_xoffset/tp_yoffset` 归零。
 
@@ -101,8 +99,8 @@
 ## 6. 复现
 
 ```powershell
-python scripts\dpctl.py packs melon-pro
-python scripts\dpctl.py up --pack melon-pro --headless
+python scripts\dpctl.py packs x6pro
+python scripts\dpctl.py up --pack x6pro --headless
 python scripts\dpctl.py wait --timeout 240
 python scripts\dpctl.py screenshot --out vm\melon.png
 python scripts\dpctl.py sh --serial -c \"tail -3 /userdata/applog/vm-weston.log\"
@@ -125,4 +123,4 @@ python scripts\dpctl.py sh --serial -c \"tail -3 /userdata/applog/vm-weston.log\
 
 ## 8. 版权
 
-镜像版权归**网易有道**；包内合成器为 Weston（**MIT 许可证**，含 10 及所有版本）+ 其依赖库（各自许可）。`weston.tar` 与 `images/` 均不进可传播代码包。
+镜像版权归**网易有道**，仅供个人学习研究；包内合成器为 Debian 项目发行物（各自许可）。`weston.tar` 与 `images/` 均不进可传播代码包。

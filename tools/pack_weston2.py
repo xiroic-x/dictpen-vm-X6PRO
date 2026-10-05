@@ -1,6 +1,6 @@
 import os, shutil
 SRC = 'vm/work/weston-root'
-DST = 'vm/packs/melon-pro/weston'
+DST = 'vm/packs/x6pro/weston'
 EXACT = ['usr/bin/weston',
  'usr/lib/aarch64-linux-gnu/libweston-10/drm-backend.so',
  'usr/lib/aarch64-linux-gnu/libweston-10/headless-backend.so',

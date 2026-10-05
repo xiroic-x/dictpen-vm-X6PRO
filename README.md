@@ -1,13 +1,13 @@
 # dictpen-vm-X6PRO · 有道词典笔 X6pro 虚拟机适配
 
-> 有道词典笔 **X6pro**（平台标识 RK3562 Melon / Linux ext4 / 固件 4.3.5）在 [lbdl0030/dictpen-rootfs](https://github.com/lbdl0030/dictpen-rootfs) 的 dictpen-vm 框架上的适配。固件包目录沿用框架内标识 `melon-pro`，对应设备即 **X6pro**。
+> 有道词典笔 **X6pro**（平台标识 RK3562 Melon / Linux ext4 / 固件 4.3.5）在 [lbdl0030/dictpen-rootfs](https://github.com/lbdl0030/dictpen-rootfs) 的 dictpen-vm 框架上的适配。固件包即 `packs/x6pro/`，包名与设备型号一致。
 > 许可：本项目采用 PolyForm Noncommercial License 1.0.0（非商业许可），条款见 [LICENSE](LICENSE)。
 
 ## 包含什么
 
 | 内容 | 说明 |
 |------|------|
-| `packs/melon-pro/` | **设备 X6pro** 的固件包本体：`pack.toml` + `patches/`（initramfs 钩子、UI 启动脚本、触摸桥、配置覆盖） |
+| `packs/x6pro/` | **设备 X6pro** 的固件包本体：`pack.toml` + `patches/`（initramfs 钩子、UI 启动脚本、触摸桥、配置覆盖） |
 | `runtime/rockchip_ext4.py` | 框架 runtime 插件，让「原始 ext4 根 + U-Boot FIT boot」这类固件能挂起来 |
 | `tools/` | 本轮用到的可复现工具：依赖闭包计算、Debian 取包、aarch64 导出函数桩化、桌面资源匹配、串口解卡 |
 | `DEVLOG.md` | 开发日志：平台取证、黑屏根因、桩化约束、渲染实测、踩坑清单 |
@@ -27,12 +27,12 @@ cp runtime/rockchip_ext4.py  <框架>/scripts/runtimes/
 #      from . import rockchip_ext4
 #      REGISTRY["rockchip-linux-ext4"] = rockchip_ext4.RockchipExt4Runtime
 # 3) 放包
-cp -r packs/melon-pro  <框架>/packs/
-#    并把固件镜像放到 packs/melon-pro/images/{boot_a.img,system_a.img}
-#    需要 UI 时再放 packs/melon-pro/{weston.tar,desktop.tar}（可选，见 ASSETS.md）
+cp -r packs/x6pro  <框架>/packs/
+#    并把固件镜像放到 packs/x6pro/images/{boot_a.img,system_a.img}
+#    需要 UI 时再放 packs/x6pro/{weston.tar,desktop.tar}（可选，见 ASSETS.md）
 # 4) 起
-python scripts/dpctl.py packs melon-pro
-python scripts/dpctl.py up --pack melon-pro --headless
+python scripts/dpctl.py packs x6pro
+python scripts/dpctl.py up --pack x6pro --headless
 python scripts/dpctl.py screenshot --out shot.png
 python scripts/dpctl.py tap 480 240          # 触摸（经包内触摸桥）
 python scripts/dpctl.py down

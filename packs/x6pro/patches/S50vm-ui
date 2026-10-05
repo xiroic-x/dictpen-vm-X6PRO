@@ -1,5 +1,5 @@
 #!/bin/sh
-# melon-pro UI stack: our software compositor + the firmware's own app.
+# x6pro UI stack: our software compositor + the firmware's own app.
 [ "$1" = start ] || exit 0
 
 LOG=/userdata/applog
@@ -68,5 +68,5 @@ export ALSA_LIB_ADD_GAIN=1
 /usr/bin/runSysconfigMgr >$LOG/vm-sysconfig.log 2>&1 &
 sleep 2
 setsid /usr/bin/guardian_run /usr/bin/miniapp >$LOG/vm-miniapp.log 2>&1 < /dev/null &
-echo "melon-pro: compositor + firmware app launched"
+echo "x6pro: compositor + firmware app launched"
 exit 0
