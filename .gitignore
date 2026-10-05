@@ -1,0 +1,13 @@
+# 版权资产与本地大文件：不进仓库
+images/
+*.img
+*.tar
+*.tar.gz
+*.so
+*.dmp
+work/
+vm/
+tools/kernel-root*/
+downloads/
+*.log
+openssl-san.cnf
