@@ -14,7 +14,7 @@
 | 用户态 | aarch64 + glibc 2.36（`libc.so.6` 导出到 GLIBC_2.36），因此可直接使用 Debian bookworm arm64 二进制 |
 | 图形栈 | **ARM Mali（libmali）+ Rockchip RGA**：`libmali-bifrost-g52-g13p0-wayland-gbm.so`、`librga.so.2`；无 Mesa、无 `/usr/lib/dri` |
 
-镜像来源：上游 release [X6pro](https://github.com/lbdl0030/dictpen-rootfs/releases/tag/X6pro)（词典笔 OS 4.3.5，ext4 版本）。其中 `X6pro_boot_ext4.img` 与本包 `boot_a.img` 的 MD5 已核对一致。
+镜像来源：上游 release [X6pro](https://github.com/lbdl0030/dictpen-rootfs/releases/tag/X6pro)（词典笔 OS 4.3.5，ext4 版本）。其公布的 MD5 表（`X6pro_boot_ext4.img` = `5a1129a5bd70cf3099b793e512aabb57`、`X6pro_rootfs_ext4.img` = `db313878a4a151e140d9be7cca287e5d`）与本包 `[checks]` 一致，即包内两个镜像就是上游同版本镜像。
 
 镜像校验（`[checks]`，本地计算）：
 
