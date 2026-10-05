@@ -42,7 +42,7 @@ tar -cf packs/melon-pro/weston.tar -C packs/melon-pro/weston .
 ```
 
 把结果放成 `packs/melon-pro/weston.tar`（包钩子会投送到 guest，`S50vm-ui` 负责解包启动）。
-Debian 二进制按各自许可证（GPL/LGPL/BSD/MIT 等）分发，**保留其许可证文本**。
+许可：**Weston 本体（含 10 及所有版本）为 MIT 许可证**；随包依赖库按各自许可证（多为 MIT/BSD/LGPL）分发，随包保留各自的许可证文本。
 
 ## 3. 桌面资源 `desktop.tar`
 

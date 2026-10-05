@@ -56,7 +56,7 @@ python scripts/dpctl.py down
 ## 授权
 
 - 本仓库自有代码与文档采用 **PolyForm Noncommercial License 1.0.0**，完整条款见 [LICENSE](LICENSE)；协议主页：<https://polyformproject.org/licenses/noncommercial/1.0.0>。
-- 第三方：Debian 软件包按各自许可证（GPL/LGPL/BSD 等）分发；Rockchip/U-Boot/NetEase Youdao 组件版权归各自权利人。
+- 第三方：**Weston（含 10 及所有版本）为 MIT 许可证**；软件合成器载荷中的其余依赖库按各自许可证（多为 MIT/BSD/LGPL）分发；Rockchip / U-Boot / NetEase Youdao 组件版权归各自权利人。
 - 本项目与**网易有道**、**Rockchip** 无任何隶属关系，不代表其立场。
 
 ## 免责声明
