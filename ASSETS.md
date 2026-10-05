@@ -6,34 +6,24 @@
 
 ## 1. 固件镜像 `boot_a.img` / `system_a.img`
 
-来源：上游 release **[X6pro](https://github.com/lbdl0030/dictpen-rootfs/releases/tag/X6pro)**（`X6pro-firmware-OS4.3.5`，词典笔 os4.3.5，ext4 版本）。该 release 说明原文：
-
-> ### 文件说明
-> - 根文件系统镜像
-> - 词典笔os4.3.5
->
-> ### 使用前注意
-> 1. 确认设备型号为 X6pro
-> 2. 本镜像为ext4版本
-> 3. 因镜像文件过大，请使用网盘下载 https://1858587115.share.123pan.cn/123pan/WFGbvd-Z6FLv
->
-> 这是由 @xiroic-x 提供的镜像包，感谢分享
+来源：上游 release **[X6pro](https://github.com/lbdl0030/dictpen-rootfs/releases/tag/X6pro)**（词典笔 OS 4.3.5，ext4 版本）。取用前请先阅读该 release 页面自身的说明（设备型号、分区说明、大文件的下载方式）。
 
 对应到本包：
 
-| 分区 | 来源 | MD5（本包 `[checks]`） |
-|------|------|------------------------|
-| boot | release 资产 `X6pro_boot_ext4.img`（16 MB） | `5a1129a5bd70cf3099b793e512aabb57`（已核对与 release 资产一致） |
-| rootfs | 上面网盘镜像包里的根文件系统镜像，重命名为 `system_a.img` | `db313878a4a151e140d9be7cca287e5d` |
+| 分区 | 取法 | MD5（与 `pack.toml` 的 `[checks]` 一致） |
+|------|------|------------------------------------------|
+| boot | release 资产 `X6pro_boot_ext4.img`（16 MB） | `5a1129a5bd70cf3099b793e512aabb57` |
+| rootfs | 按 release 页面指出的方式获取根文件系统镜像，重命名为 `system_a.img` | `db313878a4a151e140d9be7cca287e5d` |
 
 ```bash
-gh release download X6pro --repo lbdl0030/dictpen-rootfs --dir ./fw    # 取 boot 镜像
-# 网盘取回 rootfs 镜像后：
+gh release download X6pro --repo lbdl0030/dictpen-rootfs --dir ./fw   # boot 镜像
+# 根文件系统镜像按 release 页面说明取回后：
 file ./fw/X6pro_boot_ext4.img system_a.img    # boot 应为 U-Boot FIT；system 应为原始 ext4（magic 0x53ef）
 md5sum ./fw/X6pro_boot_ext4.img system_a.img  # 与 packs/melon-pro/pack.toml 的 [checks] 对齐
 ```
 
 放到位：`packs/melon-pro/images/boot_a.img`（= `X6pro_boot_ext4.img`）、`packs/melon-pro/images/system_a.img`。
+（`[checks]` 与本机镜像不一致时，说明拿到的是别的版本，改 `[checks]` 或换镜像。）
 
 ## 2. 软件合成器载荷 `weston.tar`
 

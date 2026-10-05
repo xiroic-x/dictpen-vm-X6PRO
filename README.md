@@ -15,7 +15,7 @@
 
 ## 为什么仓库里没有镜像和大文件
 
-固件镜像、桌面资源、OCR 桩库的版权属于**网易有道**，本仓库不转载。固件镜像来自上游 release [X6pro](https://github.com/lbdl0030/dictpen-rootfs/releases/tag/X6pro)（镜像包由 @xiroic-x 提供），其余按需在本地生成，步骤见 [ASSETS.md](ASSETS.md)。
+固件镜像、桌面资源、OCR 桩库的版权属于**网易有道**，本仓库不转载。固件镜像来自上游 release [X6pro](https://github.com/lbdl0030/dictpen-rootfs/releases/tag/X6pro)，其余按需在本地生成，步骤见 [ASSETS.md](ASSETS.md)。
 
 ## 快速开始
 
