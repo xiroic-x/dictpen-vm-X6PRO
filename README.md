@@ -49,7 +49,7 @@ python scripts/dpctl.py down
 | 触控 | 通过 | `tap 300 150` → 桥日志 `down 300,83`；`tap 600 350` → `down 599,193`（UI 像素坐标） |
 | 全新状态盘首启初始化 | 未闭环 | 应用停在自带「正在初始化配置」splash；缺 `vendor_storage` 设备身份 + 云端首启流程未完成。**闭合手段**：`ASSETS.md` 里的 `userdata-seed.tar` 机制 |
 
-## 硬件模拟的硬约束（买前须知）
+## 使用前必读：QEMU 模拟的硬约束
 
 这台固件的图形栈两条腿都在 Rockchip 专有硬件上：GL 走 ARM Mali（`libmali.so.1`），pixman 走 RGA（`librga.so.2`）。QEMU 既无 `/dev/mali` 也无 `/dev/rga`，所以**厂商 Weston 在虚拟机里没有可用的软件路径**，必须换软件合成器——本仓库就是这么做的。同理，OCR/NPU（`*.rknn.encrypt` + `librknnrt`）在 QEMU 上不可用，包内提供的是「桩化让应用走容错路径」的本地生成方案。
 
