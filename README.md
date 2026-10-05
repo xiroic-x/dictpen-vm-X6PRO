@@ -1,7 +1,7 @@
 # dictpen-vm-packs · 有道词典笔虚拟机固件包
 
 > 给 [lbdl0030/dictpen-vm](https://github.com/lbdl0030) 框架用的固件包集合。当前包含 **melon-pro**（RK3562 Melon / Linux ext4 / 固件 4.3.5）。
-> **非商业许可**：PolyForm Noncommercial License 1.0.0 —— 任何商业用途均被禁止，详见 [LICENSE](LICENSE)。
+> 许可：本项目采用 PolyForm Noncommercial License 1.0.0（非商业许可），条款见 [LICENSE](LICENSE)。
 
 ## 包含什么
 
@@ -55,10 +55,10 @@ python scripts/dpctl.py down
 
 ## 授权
 
-- 本仓库自有代码与文档：**PolyForm Noncommercial License 1.0.0**（<https://polyformproject.org/licenses/noncommercial/1.0.0>）——禁止商业用途。
+- 本仓库自有代码与文档采用 **PolyForm Noncommercial License 1.0.0**，完整条款见 [LICENSE](LICENSE)；协议主页：<https://polyformproject.org/licenses/noncommercial/1.0.0>。
 - 第三方：Debian 软件包按各自许可证（GPL/LGPL/BSD 等）分发；Rockchip/U-Boot/NetEase Youdao 组件版权归各自权利人。
 - 本项目与**网易有道**、**Rockchip** 无任何隶属关系，不代表其立场。
 
 ## 免责声明
 
-仅供**个人学习与研究**。刷机、改造固件可能导致设备变砖、数据丢失、保修失效；请在你自己合法持有的设备上操作，并自行承担全部后果。作者不对任何直接或间接损失负责，也不提供任何担保。
+本项目面向个人学习与研究场景。刷机、改造固件可能导致设备变砖、数据丢失、保修失效；请在你自己合法持有的设备上操作，并自行承担全部后果。作者不对任何直接或间接损失负责，也不提供任何担保。

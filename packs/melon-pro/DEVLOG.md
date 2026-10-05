@@ -123,4 +123,4 @@ python scripts\dpctl.py sh --serial -c \"tail -3 /userdata/applog/vm-weston.log\
 
 ## 8. 版权
 
-镜像版权归**网易有道**，仅供个人学习研究；包内合成器为 Debian 项目发行物（各自许可）。`weston.tar` 与 `images/` 均不进可传播代码包。
+镜像版权归**网易有道**；包内合成器为 Debian 项目发行物（各自许可）。`weston.tar` 与 `images/` 均不进可传播代码包。

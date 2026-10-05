@@ -2,7 +2,7 @@
 
 > ⚠️ **警示**：下列资产含**网易有道**（固件/应用/资源）与第三方（Debian、Rockchip）的版权或授权内容。
 > **请勿把它们提交到本仓库或任何公开仓库、请勿再分发。** 本仓库只提供**在你自己的设备上生成本地副本**的步骤。
-> 商用一律禁止（见 [LICENSE](LICENSE)）。
+> 许可：本项目采用 PolyForm Noncommercial License 1.0.0，条款见 [LICENSE](LICENSE)。
 
 ## 1. 固件镜像 `boot_a.img` / `system_a.img`
 
@@ -89,4 +89,4 @@ tar -cf /userdata/userdata-seed.tar -C / userdata userdisk/miniapp
 
 ## 免责声明
 
-以上步骤仅供**个人学习研究**。资产版权归**网易有道**及各自权利人；本项目与网易有道、Rockchip 无隶属关系。请遵守当地法律与设备授权，自行承担一切后果。
+以上步骤面向个人学习与研究场景。资产版权归**网易有道**及各自权利人；本项目与网易有道、Rockchip 无隶属关系。请遵守当地法律与设备授权，自行承担一切后果。
