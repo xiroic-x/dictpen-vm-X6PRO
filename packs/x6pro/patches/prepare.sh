@@ -6,8 +6,12 @@ for script in S01DisableDebugUart S10async_commit.sh S21mountall.sh S40network S
         mv "$TARGET/etc/init.d/$script" "$TARGET/etc/vm-disabled/$script"
     fi
 done
-cp /patches/S50vm-ui "$TARGET/etc/init.d/S50vm-ui"
-chmod 755 "$TARGET/etc/init.d/S50vm-ui"
+for s in S45vm-wifi S50vm-ui; do
+    if [ -f "/patches/$s" ]; then
+        cp "/patches/$s" "$TARGET/etc/init.d/$s"
+        chmod 755 "$TARGET/etc/init.d/$s"
+    fi
+done
 # Compositor payload for the guest side to unpack (busybox tar, uncompressed).
 if [ -f /patches/weston.tar ]; then
     cp -f /patches/weston.tar "$TARGET/userdata/weston.tar"
@@ -21,6 +25,11 @@ fi
 if [ -f /patches/desktop.tar ]; then
     cp -f /patches/desktop.tar "$TARGET/userdata/desktop.tar"
     echo "x6pro: desktop resources staged"
+fi
+# Mark the emulated touch node as a touchscreen before the app starts.
+mkdir -p "$TARGET/etc/udev/rules.d"
+if [ -f /patches/99-axs-ts.rules ]; then
+    cp -f /patches/99-axs-ts.rules "$TARGET/etc/udev/rules.d/99-axs-ts.rules"
 fi
 # Keep the generic virtual network path; remove only the unavailable dropbear entry.
 if [ ! -x "$TARGET/usr/sbin/dropbear" ]; then

@@ -21,7 +21,7 @@ bpp = 32
 [adapt]
 battery = true
 license = true
-ap = false
+ap = true
 touchbridge = "patches/touchbridge.pl"
 cfg_overlay = "patches/cfg.json.overrides"
 hooks = ["patches/prepare.sh"]
@@ -29,6 +29,8 @@ hooks = ["patches/prepare.sh"]
 [adapt.replace]
 "patches/get_pcba_version" = "/usr/bin/get_pcba_version"
 "patches/S50vm-ui" = "/etc/init.d/S50vm-ui"
+"patches/S45vm-wifi" = "/etc/init.d/S45vm-wifi"
+"patches/99-axs-ts.rules" = "/etc/udev/rules.d/99-axs-ts.rules"
 "patches/weston.ini" = "/etc/xdg/weston/weston.ini"
 "weston.tar" = "/userdata/weston.tar"
 "desktop.tar" = "/userdata/desktop.tar"

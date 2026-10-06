@@ -61,6 +61,9 @@
 | 触控（鼠标→触摸桥） | 自研 `patches/touchbridge.pl`：uinput 设备 name/phys=axs_ts → `/dev/input/by-path/axs_ts -> /dev/input/event2`；`dpctl tap 300 150` → 桥日志 `down 300,83`、`tap 600 350` → `down 599,193`（UI 像素坐标） |
 | 桌面全渲染 | `vm/melon-home2.png`：查词翻译 / 语法精讲 / 随身听 三张卡片完整（960×266 条带，y=107）；资源来自 `vm/vm/desktop_x`（178 张图 + 页面 bundle），装入 `pkg/<id>/a/`（id 取应用日志的 topAppId：8080222437664451 / 8080252464522508）后图片错误从数百次降到 15 次 |
 | 渲染耗时 | 应用启动 → 首帧全渲染 ≈ **77 s**（采样：65.2 s 仍是合成器背景，76.8 s 出现 315 KB 全渲染帧；TCG 纯软件模拟） |
+| 网络（Wi-Fi 关联 + DHCP） | 通过 | `x6pro-wifi: ssid=Youdao-VM wpa_state=COMPLETED` + `wlan0 inet addr:10.201.126.13x`（AP 的 dnsmasq 发租约）；eth0 出网 DNS 与 ICMP 实测通 |
+| 触摸设备形态 | 通过 | `axs_ts`：`P: Phys=axs_ts`、ABS `0..959 / 0..265`、udev `ID_INPUT_TOUCHSCREEN=1`；桥日志 `down 489,133` 坐标正确 |
+| UI 显示网络已连接 | 未取证 | 需应用稳定运行后用点击进设置页截图确认 |
 | 越过激活 | 带开发凭证后日志出现 `Pin=Develop=homeModeIconShow=false` 与 30s 周期 `Message insert` 主循环 → 应用已进入首页逻辑 |
 
 ## 5. 未完成（按证据排序）
@@ -96,6 +99,22 @@
 - 桩化 `libyocr.so` / `libYoudaoStitch.so` 的导出函数是必须的（否则模型加载链在 QEMU 崩）；但**必须保留构造器**（`DT_INIT` / `DT_INIT_ARRAY` / `DT_INIT_ARRAYSZ` 原样）。
 - 实测：中和构造器 → 应用启动即 SIGILL（Illegal instruction）；保留构造器 → 应用正常起来并能进桌面。包内当前为保留构造器版本（`DT_INIT=513992`）。
 - 桩化规则：函数名含 init/open/create/load/setup/start/connect/begin/prepare/config → 返回 -1，其余返回 0；文件大小不变、仅就地覆写。
+### 5.4 网络与输入适配（本轮新增）
+
+**网络**
+
+- 框架侧：包内 `ap = true` 后由框架的 `S00wifi-ap` 在 wlan1 上起虚拟 AP `Youdao-VM`（10.201.126.1）并做 NAT；实测 `iptables-legacy` 必须带 `XTABLES_LIBDIR=/root/.vm/ap/xtables`，否则报找不到 MASQUERADE 目标库。
+- 笔侧：新增 `patches/S45vm-wifi` —— 写 `/userdata/cfg/wpa_supplicant.conf`（Youdao-VM，开放网络）、写 `/dev/bes2600`（内容 `wifi opend`，厂商 `wifi-manager` 据此判断芯片状态）、拉起 wpa_supplicant。实测 `wpa_state=COMPLETED`，`wlan0` 从 AP 的 dnsmasq 拿到租约（10.201.126.13x）。
+- 厂商 `wifi-manager` 不由包启动：它驱动 bes2600，对 hwsim 会主动 deauth 并置 `INTERFACE_DISABLED`；其接口约定为控制套接字 `/var/run/wpa_supplicant/wlan0` 与配置 `/data/cfg/wpa_supplicant.conf`（`/data` 是指向 `userdata` 的符号链接）。
+- 出网：guest 走 eth0（默认路由），实测 DNS 与 ICMP 均通；AP 网段的转发/NAT 规则保留给**外部客户端**——同一内核里 station 与 AP 同栈时单播回程不成立（`ping -I wlan0`、ping AP 地址均丢包），属拓扑限制而非配置问题。
+
+**触摸**（`patches/touchbridge.pl` 修了三个真 bug）
+
+1. uinput 未声明 ABS 范围 → 内核侧 `max=0`，应用把所有触点读成 (0,0)，表现为「点了没反应」；改用 `UI_ABS_SETUP` 声明 `0..W-1` / `0..H-1`。
+2. `UI_SET_PHYS` ioctl 号写错（应为 nr=108）→ `phys` 为空、`by-path` 链接落空；修正后 `P: Phys=axs_ts`。
+3. 带 MT 槽加 `BTN_TOOL_FINGER` 会被 libinput 判成触摸板，触摸 UI 收不到触摸事件；改为标准单点触摸屏（仅 `ABS_X/ABS_Y` 加 `BTN_TOUCH`），并加 udev 规则 `ENV{ID_INPUT_TOUCHSCREEN}=1`（`UI_SET_PROPBIT` 在当前内核返回 EINVAL）。
+
+**未完成**：应用侧 UI 的「网络已连接」显示尚未取证——需要应用稳定运行时用点击进入设置页截图确认；本轮末次启动的实例在初始化阶段崩过一次（dump 留存在 `/userdisk/corefile/4.3.5/`）。
 ## 6. 复现
 
 ```powershell

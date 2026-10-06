@@ -1,0 +1,71 @@
+#!/bin/sh
+# x6pro: put the pen's own Wi-Fi station stack on the emulated radio
+# (mac80211_hwsim wlan0) and join the AP the framework publishes on wlan1.
+#
+# What this gives you: the app sees a real associated Wi-Fi link (wpa_state
+# COMPLETED) with a DHCP lease from the guest's own dnsmasq, so the firmware's
+# network page has something true to show.  Guest internet transit still goes
+# over eth0 - the emulated AP is meant for *external* clients (a phone joining
+# Youdao-VM), so the pen's own station cannot route through it from inside the
+# same kernel.  The vendor's wifi-manager is deliberately NOT started: it drives
+# the bes2600 chip, and against hwsim it just deauthenticates and disables the
+# interface.
+[ "$1" = start ] || exit 0
+
+LOG=/userdata/applog
+AP=/root/.vm/ap
+IPT="$AP/ld-linux-aarch64.so.1 --library-path $AP/lib $AP/iptables-legacy"
+mkdir -p $LOG /var/run/wpa_supplicant /run/network 2>/dev/null
+
+n=0
+while [ ! -e /sys/class/net/wlan0 ] && [ $n -lt 20 ]; do n=$((n + 1)); sleep 1; done
+if [ ! -e /sys/class/net/wlan0 ]; then
+    echo "x6pro-wifi: no wlan0 (mac80211_hwsim missing?)" >/dev/kmsg
+    exit 0
+fi
+
+cat > /userdata/wpa_supplicant-vm.conf <<'WPAEOF'
+ctrl_interface=/var/run/wpa_supplicant
+update_config=0
+network={
+    ssid="Youdao-VM"
+    key_mgmt=NONE
+    priority=1
+}
+WPAEOF
+
+killall -q wpa_supplicant 2>/dev/null
+setsid /usr/sbin/wpa_supplicant -Dnl80211 -iwlan0 -c/userdata/wpa_supplicant-vm.conf \
+    -f $LOG/vm-wpa.log >/dev/null 2>&1 < /dev/null &
+
+n=0
+while [ $n -lt 30 ]; do
+    if /usr/sbin/wpa_cli -iwlan0 status 2>/dev/null | grep -q 'wpa_state=COMPLETED'; then
+        break
+    fi
+    n=$((n + 1))
+    sleep 1
+done
+
+/sbin/ifconfig wlan0 up 2>/dev/null
+if ! /usr/sbin/udhcpc -n -q -t 3 -T 2 -i wlan0 >/dev/null 2>&1; then
+    /sbin/ifconfig wlan0 10.201.126.2 netmask 255.255.255.0 up 2>/dev/null
+    ip route add 10.201.126.0/24 dev wlan0 src 10.201.126.2 2>/dev/null
+fi
+
+# Keep the AP subnet routable inside the guest (external clients depend on it).
+if [ -x "$AP/iptables-legacy" ]; then
+    echo 1 > /proc/sys/net/ipv4/ip_forward 2>/dev/null
+    XTABLES_LOCKFILE=/tmp/xtables.lock XTABLES_LIBDIR="$AP/xtables" \
+        $IPT -t nat -C POSTROUTING -s 10.201.126.0/24 -o eth0 -j MASQUERADE 2>/dev/null \
+        || XTABLES_LOCKFILE=/tmp/xtables.lock XTABLES_LIBDIR="$AP/xtables" \
+           $IPT -t nat -A POSTROUTING -s 10.201.126.0/24 -o eth0 -j MASQUERADE 2>/dev/null
+fi
+
+if ! grep -q '^nameserver' /etc/resolv.conf 2>/dev/null; then
+    printf 'nameserver 10.0.2.3\n' > /etc/resolv.conf 2>/dev/null
+fi
+
+echo "x6pro-wifi: $(/usr/sbin/wpa_cli -iwlan0 status 2>/dev/null | grep -e '^ssid' -e wpa_state | tr '\n' ' ')" >/dev/kmsg
+echo "x6pro-wifi: wlan0 $(/sbin/ifconfig wlan0 2>/dev/null | grep -o 'inet addr:[0-9.]*' | head -1)" >/dev/kmsg
+exit 0
