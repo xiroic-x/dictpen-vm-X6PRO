@@ -115,6 +115,13 @@
 3. 带 MT 槽加 `BTN_TOOL_FINGER` 会被 libinput 判成触摸板，触摸 UI 收不到触摸事件；改为标准单点触摸屏（仅 `ABS_X/ABS_Y` 加 `BTN_TOUCH`），并加 udev 规则 `ENV{ID_INPUT_TOUCHSCREEN}=1`（`UI_SET_PROPBIT` 在当前内核返回 EINVAL）。
 
 **未完成**：应用侧 UI 的「网络已连接」显示尚未取证——需要应用稳定运行时用点击进入设置页截图确认；本轮末次启动的实例在初始化阶段崩过一次（dump 留存在 `/userdisk/corefile/4.3.5/`）。
+### 5.5 用鼠标直接控制笔（host 侧直控）
+
+- 事实：QEMU 窗口里的点击到达 guest 是**鼠标事件**（virtio tablet → `/dev/input/event1`），而笔的 UI 是**触摸 UI**；框架的 `pointer` overlay 只在 host 侧画一个落点提示环（其 docstring 自述），**不转发输入**。
+- 包内已就位两条转换路径：
+  1. guest 侧 `patches/touchbridge.pl` 把 tablet 的按下/拖动转成 `axs_ts` 单点触摸事件（`S00touchbridge: touch device ready`），配合 `99-axs-ts.rules` 让 libinput 视其为触摸屏；
+  2. host 侧 `tools/mouse2touch.py`：监听 QEMU 窗口内的鼠标按下/拖动/抬起，按面板坐标经 QMP 直接发触摸序列（可选 `--test X Y` 单发一次），只转发落在 UI 条带（默认 y=107..373）内的点。
+- 前提是**应用已经画出界面**：本轮实测该状态盘上应用会停在启动阶段（屏幕全黑、`pidof miniapp` 有值但无窗口，dump 落在 `/userdisk/corefile/4.3.5/`），此时点哪儿都不会有反应。
 ## 6. 复现
 
 ```powershell
