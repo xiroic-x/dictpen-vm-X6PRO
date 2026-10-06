@@ -40,6 +40,8 @@ tar -cf packs/x6pro/weston.tar -C packs/x6pro/weston .
 ```
 
 把结果放成 `packs/x6pro/weston.tar`（包钩子会投送到 guest，`S50vm-ui` 负责解包启动）。
+
+> **也可以直接取用 release 附件**：`x6pro-pack-v4.3.5.zip` 已内置 `packs/x6pro/weston.tar` 与其 `licenses/`（32 个依赖包的协议清单 + 各包 copyright 原件），无需自行构建；自建时用 `tools/license_final.py` 重新生成同一份清单。
 许可：**Weston 本体（含 10 及所有版本）为 MIT 许可证**；随包依赖库按各自许可证（多为 MIT/BSD/LGPL）分发，随包保留各自的许可证文本。
 
 ## 3. 桌面资源 `desktop.tar`

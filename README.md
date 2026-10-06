@@ -17,6 +17,14 @@
 
 固件镜像、桌面资源、OCR 桩库的版权属于**网易有道**，本仓库不转载。固件镜像来自上游 release [X6pro](https://github.com/lbdl0030/dictpen-rootfs/releases/tag/X6pro)，其余按需在本地生成，步骤见 [ASSETS.md](ASSETS.md)。
 
+## 发布附件
+
+| 附件 | 内容 |
+|------|------|
+| `x6pro-pack-v4.3.5.zip` | 固件包 + 软件合成器载荷 `packs/x6pro/weston.tar` + `licenses/`（依赖协议清单与各包 copyright 原件）+ `ASSETS.md` + `LICENSE` |
+| `x6pro-tools-v4.3.5.zip` | `runtime/rockchip_ext4.py` + `tools/`（依赖闭包、Debian 取包、aarch64 桩化、桌面资源匹配、许可审计、串口解卡、探针）+ `ASSETS.md` + `LICENSE` |
+
+依赖协议清单（`licenses/README.md`）由脚本按实际载荷生成：先读 `weston.tar` 的真实文件，再按 `.deb` 文件清单归属到包，最后按各包 `/usr/share/doc/<包>/copyright` 逐条判定并给出依据；Weston 本体（MIT）不逐条列出。
 ## 快速开始
 
 ```bash
